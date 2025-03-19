@@ -32,36 +32,66 @@ def add_task(task_desc):
 
 def update_task(task_id, task_desc):
     tasks = load_tasks()
-    for task in tasks:
-        if task['id'] == task_id:
-            old_desc = task['description']
-            task['description'] = task_desc
-            save_tasks(tasks)
-            print(f'Task id = {task_id} has updated description from {old_desc} to {task['description']}')
-            return
-    print(f'No task of ID {task_id} and fail to update task')
-    
+    task = get_task_by_id(tasks=tasks, task_id=task_id)
+    if task:
+        old_desc = task['description']
+        task['description'] = task_desc
+        save_tasks(tasks)
+        print(
+            f'Task id = {task_id} has updated description from {old_desc} to {task['description']}')
+    else:
+        print(f'No task of ID {task_id} and fail to update task')
 
 
 def delete_task(task_id):
     tasks = load_tasks()
+    task = get_task_by_id(tasks=tasks,task_id=task_id)
+    if task:
+        tasks.remove(task)
+        save_tasks(tasks)
+        print(f'Task ID {task_id} was deleted successfully ')
+    else:
+        print(f'No task of ID {task_id} and fail to delete task')
+    
+
+
+def update_status(task_id, status):
+    tasks = load_tasks()
+    task = get_task_by_id(tasks=tasks, task_id=task_id)
+    if task:
+        task['status'] = status
+        save_tasks(tasks)
+        print('Status Updated')
+    else:
+        print('Error updating status')
+
+
+def get_task_by_id(tasks, task_id):
     for task in tasks:
         if task['id'] == task_id:
-            tasks.remove(task)
-            save_tasks(tasks)
-            return
-    print(f'No task of ID {task_id} and fail to delete task')
+            return task
+    return None
 
 
-def list_task(task_file, task_type='all'):
-    if task_type == 'all':
-        pass
-    elif task_type == 'done':
-        pass
-    elif task_type == 'todo':
-        pass
-    elif task_type == 'in-progress':
-        pass
+def list_task(task_status='all'):
+    tasks = load_tasks()
+    if task_status == 'all':
+        print_tasks(tasks)
+    else:
+        current_task = []
+        for task in tasks:
+            if task['status'] == task_status:
+                current_task.append(task)
+        print_tasks(current_task)
+
+
+def print_tasks(tasks):
+    if len(tasks) > 0:
+        for task in tasks:
+            print(
+                f'Id - {task['id']} : {task['description']} , status is {task['status']}')
+    else:
+        print('No task')
 
 
 def main():
@@ -88,12 +118,17 @@ python task_cli.py list in-progress''')
             update_task(task_id=int(task_id), task_desc=task_desc)
         elif command == 'delete':
             task_id = argv[2]
-            delete_task(task_id= int(task_id))
+            delete_task(task_id=int(task_id))
         elif command == 'list':
             if len(argv) == 2:
-                print('Show all list')
+                list_task()
+            else:
+                task_status = argv[2]
+                list_task(task_status=task_status)
         elif command.startswith('m'):
-            pass
+            task_id = argv[2]
+            status = command[command.find('-')+1:]
+            update_status(task_id=int(task_id), status=status)
 
 
 if __name__ == '__main__':
