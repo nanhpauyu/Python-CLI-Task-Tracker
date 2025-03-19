@@ -1,0 +1,27 @@
+[
+    {
+        "id": 2,
+        "description": "Buy groceries",
+        "status": "todo"
+    },
+    {
+        "id": 3,
+        "description": "Buy egg",
+        "status": "todo"
+    },
+    {
+        "id": 4,
+        "description": "Buy milk",
+        "status": "todo"
+    },
+    {
+        "id": 5,
+        "description": "Buy fruit",
+        "status": "todo"
+    },
+    {
+        "id": 6,
+        "description": "Buy vegetables",
+        "status": "todo"
+    }
+]
